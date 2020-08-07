@@ -22,30 +22,46 @@ const getDateToString = (minus) => {
       ? dateNow.getMonth() + 1
       : "0" + (dateNow.getMonth() + 1)) +
     "-" +
-    dateNow.getDate()
+    (dateNow.getDate() > 9 ? dateNow.getDate() : "0" + dateNow.getDate())
   );
 };
 
-const fetchData = async () => {
-  var result = [];
-  for (var i = 0; i < CONST.STOCKS.length; i++) {
-    console.log(`${CONST.BACKEND_HOST}?Get,${CONST.RSI},${CONST.STOCKS[i]}`);
-    await fetch(`${CONST.BACKEND_HOST}?Get,${CONST.RSI},${CONST.STOCKS[i]}`)
-      .then((res) => res.text())
-      .then((res) => JSON.parse(res))
-      .then((res) => {
-        result.push({
+const date = getDateToString(1);
+const getTechData = async (indicator) =>
+  Promise.all(
+    CONST.STOCKS.map(async (stock) =>
+      fetch(`${CONST.HOST}?Get,${indicator},${stock}`)
+        .then((res) => res.text())
+        .then((res) => JSON.parse(res))
+        .then((res) => ({
           symbol: res["Meta Data"]["1: Symbol"],
-          data: parseFloat(
-            res["Technical Analysis: RSI"][getDateToString(1)]["RSI"]
+          data: parseTechData(
+            indicator,
+            res[`Technical Analysis: ${indicator}`][date]
           ),
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        }))
+        .catch((error) => {
+          console.log(stock);
+          fetch(`${CONST.HOST}?${CONST.KEY},${indicator},${stock}`);
+        })
+    )
+  );
+
+const parseTechData = (indicator, data) => {
+  switch (indicator) {
+    case CONST.RSI:
+      return parseFloat(data[indicator]);
+    case CONST.MACD:
+      return parseMACD(data);
   }
-  return result;
+};
+
+const parseMACD = (data) => {
+  return {
+    MACD_Hist: parseFloat(data["MACD_Hist"]),
+    MACD: parseFloat(data["MACD"]),
+    MACD_Signal: parseFloat(data["MACD_Signal"]),
+  };
 };
 
 module.exports = {
@@ -58,5 +74,5 @@ module.exports = {
   getDateToString: function (minus) {
     return getDateToString(minus);
   },
-  fetchData: fetchData,
+  getTechData: getTechData,
 };
