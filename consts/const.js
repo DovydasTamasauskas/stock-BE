@@ -255,6 +255,7 @@ const STOCKS2 = [
   "SNE",
   "SBUX",
   "ADBE",
+  "JPM",
 ];
 
 module.exports = {
@@ -264,4 +265,9 @@ module.exports = {
   MACD: "MACD",
   Daily: "Daily",
   KEY: "JUZ12YQZKFCKZI5M",
+  SET: "Set",
+  ANALYSIS: "Analysis",
 };
+// JUZ12YQZKFCKZI5M
+// HGJWFG4N8AQ66ICD
+// VFJX12SNBPEWKHQB

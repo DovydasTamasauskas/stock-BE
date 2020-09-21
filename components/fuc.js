@@ -1,5 +1,7 @@
 const CONST = require("../consts/const");
 const fetch = require("node-fetch");
+const doubleSort = require("double-sort");
+const sort = require("./sort");
 
 const findDuplicates = (arr) => {
   let sorted_arr = arr.slice().sort();
@@ -12,23 +14,22 @@ const findDuplicates = (arr) => {
   results.length != 0 && console.log("duplicates stocks", results);
 };
 
-const getDateToString = (minus) => {
-  var dateNow = new Date();
-  dateNow.setDate(dateNow.getDate() - minus);
-  return (
-    dateNow.getFullYear() +
-    "-" +
-    (dateNow.getMonth() > 9
-      ? dateNow.getMonth() + 1
-      : "0" + (dateNow.getMonth() + 1)) +
-    "-" +
-    (dateNow.getDate() > 9 ? dateNow.getDate() : "0" + dateNow.getDate())
-  );
+const getDateToString = async (indicator) =>
+  fetch(`${CONST.HOST}?Get,${indicator},${CONST.STOCKS[0]}`)
+    .then((res) => res.text())
+    .then((res) => JSON.parse(res))
+    .then((res) => res["Meta Data"]["3: Last Refreshed"]);
+
+const getTechData = async (indicator) => {
+  const techData = await fetchTechData(indicator);
+  const result = sort(techData);
+  console.log(result);
+  return result;
 };
 
-const date = getDateToString(1);
-const getTechData = async (indicator) =>
-  Promise.all(
+const fetchTechData = async (indicator) => {
+  const date = await getDateToString(indicator);
+  return Promise.all(
     CONST.STOCKS.map(async (stock) =>
       fetch(`${CONST.HOST}?Get,${indicator},${stock}`)
         .then((res) => res.text())
@@ -41,12 +42,12 @@ const getTechData = async (indicator) =>
           ),
         }))
         .catch((error) => {
-          console.log(stock);
-          fetch(`${CONST.HOST}?${CONST.KEY},${indicator},${stock}`);
+          console.log("unfetched ", stock);
+          //  fetch(`${CONST.HOST}?${CONST.KEY},${indicator},${stock}`);
         })
     )
   );
-
+};
 const parseTechData = (indicator, data) => {
   switch (indicator) {
     case CONST.RSI:
@@ -64,6 +65,18 @@ const parseMACD = (data) => {
   };
 };
 
+const toArray = (rsi) => {
+  var analysis = "";
+  doubleSort(rsi, "data", "symbol")
+    .filter((x) => x !== undefined)
+    .forEach((x) => {
+      if (x.symbol !== undefined || x.symbol !== null) {
+        analysis += x.symbol + "-";
+      }
+    });
+  return analysis.slice(0, -1);
+};
+
 module.exports = {
   findDuplicates: function (arr) {
     findDuplicates(arr);
@@ -75,4 +88,5 @@ module.exports = {
     return getDateToString(minus);
   },
   getTechData: getTechData,
+  toArray: toArray,
 };
