@@ -263,6 +263,7 @@ module.exports = {
   HOST: "http://www.database.lavina.lt",
   RSI: "RSI",
   MACD: "MACD",
+  SMA: "SMA",
   Daily: "Daily",
   KEY: "JUZ12YQZKFCKZI5M",
   SET: "Set",

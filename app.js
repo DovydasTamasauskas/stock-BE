@@ -9,7 +9,9 @@ const sort = require("./components/sort");
 const calculate = async () => {
   const rsi = await fun.getTechData("RSI");
   fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.RSI},${fun.toArray(rsi)}`);
-  // const macd = await fun.getTechData("MACD");
-  // console.log(sort(macd));
+  const macd = await fun.getTechData("MACD");
+  fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.MACD},${fun.toArray(macd)}`);
+  const sma = await fun.getTechData("SMA");
+  fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.SMA},${fun.toArray(sma)}`);
 };
 calculate();

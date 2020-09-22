@@ -6,8 +6,9 @@ module.exports = function (arr) {
 
   // if we don't have an array of any length, return early
   if (arr.length === 0) return arr;
-
-  // finally, sort
+  if (arr[0].data.MACD_Signal === undefined) {
+    return arr.sort((a, b) => (a.data > b.data ? 1 : -1));
+  }
   return arr.sort(function (a, b) {
     return Math.abs(a.data.MACD - a.data.MACD_Signal) <
       Math.abs(b.data.MACD - b.data.MACD_Signal)

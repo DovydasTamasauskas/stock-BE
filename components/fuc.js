@@ -23,12 +23,14 @@ const getDateToString = async (indicator) =>
 const getTechData = async (indicator) => {
   const techData = await fetchTechData(indicator);
   const result = sort(techData);
+  // const result = techData;
   console.log(result);
   return result;
 };
 
 const fetchTechData = async (indicator) => {
   const date = await getDateToString(indicator);
+  console.log(date);
   return Promise.all(
     CONST.STOCKS.map(async (stock) =>
       fetch(`${CONST.HOST}?Get,${indicator},${stock}`)
@@ -50,10 +52,10 @@ const fetchTechData = async (indicator) => {
 };
 const parseTechData = (indicator, data) => {
   switch (indicator) {
-    case CONST.RSI:
-      return parseFloat(data[indicator]);
     case CONST.MACD:
       return parseMACD(data);
+    default:
+      return parseFloat(data[indicator]);
   }
 };
 
