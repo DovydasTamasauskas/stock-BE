@@ -34,12 +34,23 @@ const findDuplicates = (arr) => {
   results.length != 0 && console.log("duplicates stocks", results);
 };
 
+const fetchTechData = async (indicator, func) => {
+  const date = await getDateToString(indicator);
+  return Promise.all(
+    CONST.STOCKS.map(async (stock) =>
+      fetch(`${CONST.HOST}?Get,${indicator},${stock}`)
+        .then((res) => res.text())
+        .then((res) => JSON.parse(res))
+        .then((res) => func(indicator, res, date))
+        .catch((error) => {
+          console.log("unfetched ", stock);
+          //  fetch(`${CONST.HOST}?${CONST.KEY},${indicator},${stock}`);
+        })
+    )
+  );
+};
+
 module.exports = {
-  findDuplicates: function (arr) {
-    findDuplicates(arr);
-  },
-  getDateToString: function (indicator) {
-    return getDateToString(indicator);
-  },
+  fetchTechData: fetchTechData,
   toArray: toArray,
 };

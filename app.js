@@ -1,20 +1,16 @@
-const cron = require("node-cron");
-const fetch = require("node-fetch");
-const doubleSort = require("double-sort");
 const INDIC = require("./components/indic/indic");
 const DAILY = require("./components/daily/daily");
 const MACD = require("./components/macd/macd");
 const C = require("./consts/const");
-// fun.findDuplicates(C.STOCKS);
 
 const calculate = async () => {
-  const rsi = await INDIC.getTechData("RSI");
+  const rsi = await INDIC.getTechData(C.RSI);
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.RSI},${fun.toArray(rsi)}`);
-  const macd = await MACD.getTechData("MACD");
+  const macd = await MACD.getTechData(C.MACD);
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.MACD},${fun.toArray(macd)}`);
-  const sma = await INDIC.getTechData("SMA");
+  const sma = await INDIC.getTechData(C.SMA);
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.SMA},${fun.toArray(sma)}`);
-  const daily = await DAILY.getTechData("Daily");
+  const daily = await DAILY.getTechData(C.Daily);
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.Daily},${fun.toArray(sma)}`);
 };
 calculate();
