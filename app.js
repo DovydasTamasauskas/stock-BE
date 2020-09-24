@@ -1,16 +1,16 @@
-const INDIC = require("./components/indic/indic");
+const SMA = require("./components/sma/sma");
+const RSI = require("./components/rsi/rsi");
 const DAILY = require("./components/daily/daily");
 const MACD = require("./components/macd/macd");
-const C = require("./consts/const");
 
 const calculate = async () => {
-  const rsi = await INDIC.getTechData(C.RSI);
+  const rsi = await RSI.getTechData();
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.RSI},${fun.toArray(rsi)}`);
-  const macd = await MACD.getTechData(C.MACD);
+  const macd = await MACD.getTechData();
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.MACD},${fun.toArray(macd)}`);
-  const sma = await INDIC.getTechData(C.SMA);
+  const sma = await SMA.getTechData();
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.SMA},${fun.toArray(sma)}`);
-  const daily = await DAILY.getTechData(C.Daily);
+  const daily = await DAILY.getTechData();
   // fetch(`${C.HOST}?${C.SET},${C.ANALYSIS},${C.Daily},${fun.toArray(sma)}`);
 };
 calculate();

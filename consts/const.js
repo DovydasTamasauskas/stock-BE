@@ -264,7 +264,6 @@ module.exports = {
   RSI: "RSI",
   MACD: "MACD",
   SMA: "SMA",
-  DAILY: "DAILY",
   Daily: "Daily",
   KEY: "JUZ12YQZKFCKZI5M",
   SET: "Set",

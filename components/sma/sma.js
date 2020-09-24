@@ -2,15 +2,9 @@ const sort = require("./sort");
 const HELPER = require("../helper");
 const C = require("../../consts/const");
 
-const parseMACD = (data) => ({
-  MACD_Hist: parseFloat(data["MACD_Hist"]),
-  MACD: parseFloat(data["MACD"]),
-  MACD_Signal: parseFloat(data["MACD_Signal"]),
-});
-
 const responseStruc = async (indicator, res, date) => ({
   symbol: res["Meta Data"]["1: Symbol"],
-  data: parseMACD(res[`Technical Analysis: ${indicator}`][date]),
+  data: parseFloat(res[`Technical Analysis: ${indicator}`][date][indicator]),
 });
 
 const getTechData = async (indicator) => {
@@ -22,5 +16,5 @@ const getTechData = async (indicator) => {
 };
 
 module.exports = {
-  getTechData: () => getTechData(C.MACD),
+  getTechData: () => getTechData(C.SMA),
 };
