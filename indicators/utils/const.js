@@ -209,13 +209,13 @@ const STOCKS2 = [
   "AAPL",
   "AMZN",
   "GOOGL",
-  // "DIS",
-  // "FOXA",
-  // "MCD",
-  // "RY",
-  // "WFC",
-  // "XOM",
-  // "KO",
+  "DIS",
+  "FOXA",
+  "MCD",
+  "RY",
+  "WFC",
+  "XOM",
+  "KO",
   // "FB",
   // "T",
   // "BA",
@@ -255,7 +255,6 @@ const STOCKS2 = [
   // "SNE",
   // "SBUX",
   // "ADBE",
-  // "JPM",
 ];
 
 module.exports = {
