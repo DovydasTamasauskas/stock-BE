@@ -7,16 +7,16 @@ const response = async (indicator, res, date) => ({
   data: parseFloat(res[`Technical Analysis: ${indicator}`][date][indicator]),
 });
 
-const getTechData = async (indicator, { post, print }) => {
+const getTechData = async (indicator, { post, print }, STOCKS) => {
   const techData = await HELPER.fetchTechData(indicator, {
     response,
     post,
     sort: (v) => sort(v),
-  });
+  }, STOCKS);
   print && console.log(techData);
   return techData;
 };
 
 module.exports = {
-  getTechData: (params) => getTechData(C.RSI, params),
+  getTechData: (params, STOCKS) => getTechData(C.RSI, params, STOCKS),
 };

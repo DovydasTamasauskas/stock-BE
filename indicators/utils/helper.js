@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const CONST = require("./const");
 // const doubleSort = require("double-sort");
+var fetchCount = 0;
 
 const toArray = (data) => {
   let analysis = "";
@@ -16,26 +17,39 @@ const getDateToString = async (indicator) =>
       (res) =>
         res["Meta Data"]["3. Last Refreshed"] ||
         res["Meta Data"]["3: Last Refreshed"]
-    );
+    ).catch((error) => {
+      console.log("unfetched ", error);
+      //  fetch(`${CONST.HOST}?${CONST.KEY},${indicator},${stock}`);
+    })
 
-const fetchData = async (indicator, func) => {
+const fetchData = async (indicator, func, STOCKS) => {
   const date = await getDateToString(indicator);
   return Promise.all(
-    CONST.STOCKS.map(async (stock) =>
+    STOCKS.map(async (stock) =>
       fetch(`${CONST.HOST}?Get,${indicator},${stock}`)
         .then((res) => res.text())
         .then((res) => JSON.parse(res))
         .then((res) => func(indicator, res, date))
         .catch((error) => {
           console.log("unfetched ", stock);
-          //  fetch(`${CONST.HOST}?${CONST.KEY},${indicator},${stock}`);
+          fetchCount++;
+          var key = CONST.KEY;
+          if(fetchCount % 4 === 0){
+            key = CONST.KEY2;
+          }
+          return fetch(`${CONST.HOST}?${key},${indicator},${stock}`).then(()=>{
+           return fetch(`${CONST.HOST}?Get,${indicator},${stock}`)
+            .then((res) => res.text())
+            .then((res) => JSON.parse(res))
+            .then((res) => func(indicator, res, date))
+          });
         })
     )
   );
 };
 
-const fetchTechData = async (indicator, { response, post, sort }) => {
-  let data = await fetchData(indicator, response);
+const fetchTechData = async (indicator, { response, post, sort }, STOCKS) => {
+  let data = await fetchData(indicator, response, STOCKS);
   data = data.filter((x) => x);
   data = sort && sort(data);
   post && postAnalysis(data, indicator);

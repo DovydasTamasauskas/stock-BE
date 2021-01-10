@@ -1,4 +1,6 @@
 const fetch = require("node-fetch");
+const cron = require("node-cron");
+
 const HELPER = require("./indicators/utils/helper");
 const C = require("./indicators/utils/const");
 const SMA = require("./indicators/indicator/sma/sma");
@@ -6,33 +8,58 @@ const RSI = require("./indicators/indicator/rsi/rsi");
 const DAILY = require("./indicators/indicator/daily/daily");
 const MACD = require("./indicators/indicator/macd/macd");
 
+
+var count = 0;
+
+var response = async () => {
+  fetch(`${C.HOST}?Get,Analysis,MyList`)
+    .then((res) => {
+      return res.text();
+    })
+    .then(body => {
+      var split = body.split('-');
+      if(split.length > 1) {
+        console.log("starting corn job... MyList");
+        // calculate(split);
+       cornJob(split);
+      }else{
+        console.log("starting corn job... DEFAULT");
+        cornJob(C.STOCKS);
+      }
+    })
+    .catch((error) => {
+      console.log("ERROR fetching MyList ", error);
+      cornJob(C.STOCKS);
+    });
+}
+
+response();
+
+var cornJob = async (STOCKS) => {
+  cron.schedule("* * * * *", function () {
+    if(count == STOCKS.length){
+      calculate(STOCKS);
+      // process.exit();
+    }else{;
+      console.log(STOCKS[count], STOCKS.length - count - 1);
+      fetch(`${C.HOST}?${C.KEY},${C.DAILY},${STOCKS[count]}`);
+      fetch(`${C.HOST}?${C.KEY},${C.SMA},${STOCKS[count]}`);
+      fetch(`${C.HOST}?${C.KEY},${C.EMA},${STOCKS[count]}`);
+      fetch(`${C.HOST}?${C.KEY2},${C.RSI},${STOCKS[count]}`);
+      fetch(`${C.HOST}?${C.KEY2},${C.MACD},${STOCKS[count]}`);
+      count++;
+    }
+  });
+}
+
 const params = {
   post: true,
   print: true,
 };
 
-const calculate = async () => {
-  const rsi = await RSI.getTechData(params);
-  const macd = await MACD.getTechData(params);
-  const sma = await SMA.getTechData(params);
-  const daily = await DAILY.getTechData(params);
-
-  // less 100,000 volume
-  // sma bellow chart
-  // rsi < 35
-
-  // let rsi35 = rsi.filter((x) => x <= 35);
-  // let result = [];
-  // for (let i = 0; i < daily.length; i++) {
-  //   for (let ii = 0; ii < sma.length; ii++) {
-  //     if (daily[i].symbol === sma[ii].symbol) {
-  //       // console.log(daily[i].symbol);
-  //       if (daily[i].data.low > sma[ii].data) {
-  //         result.push(sma[ii].symbol);
-  //       }
-  //     }
-  //   }
-  // }
-  // console.log("result", result);
+const calculate = async (STOCKS) => {
+  console.log("Calculating RSI");
+  const rsi = await RSI.getTechData(params, STOCKS);
+  process.exit();
 };
-calculate();
+
