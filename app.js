@@ -53,8 +53,7 @@ var cornJob = async (STOCKS) => {
 }
 
 const params = {
-  post: true,
-  print: true,
+  post: true
 };
 
 const calculate = async (STOCKS) => {

@@ -48,13 +48,12 @@ const fetchData = async (indicator, func, STOCKS) => {
   );
 };
 
-const fetchTechData = async (indicator, { response, post, sort }, STOCKS) => {
-  let data = await fetchData(indicator, response, STOCKS);
-  data = data.filter((x) => x);
-  data = sort && sort(data);
-  post && postAnalysis(data, indicator);
-  return data;
-};
+const fetchTechData = async (indicator, { response, post, sort }, STOCKS) => 
+  await fetchData(indicator, response, STOCKS)
+    .then((data)=> data.filter((x) => x))
+    .then((data)=> sort && sort(data))
+    .then((data)=> post && postAnalysis(data, indicator).then(()=> console.log("posting data to RSI...", data.length+"/"+STOCKS.length)));
+
 
 const postAnalysis = (data, indicator) =>
   fetch(
