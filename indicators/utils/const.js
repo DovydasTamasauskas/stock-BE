@@ -206,6 +206,9 @@ const STOCKS2 = [
 module.exports = {
   STOCKS: STOCKS2,
   HOST: "http://www.database.pasesupiomedelynas.lt",
+  DAILY: "Daily",
+  EMA: "EMA",
+  SMA: "SMA",
   RSI: "RSI",
   MACD: "MACD",
   SMA: "SMA",

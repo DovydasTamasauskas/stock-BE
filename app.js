@@ -40,13 +40,13 @@ var cornJob = async (STOCKS) => {
     if(count == STOCKS.length){
       calculate(STOCKS);
       // process.exit();
-    }else{;
-      console.log(STOCKS[count], STOCKS.length - count - 1);
+    }else{
+      console.log(STOCKS[count], STOCKS.length - count);
       fetch(`${C.HOST}?${C.KEY},${C.DAILY},${STOCKS[count]}`);
-      fetch(`${C.HOST}?${C.KEY},${C.SMA},${STOCKS[count]}`);
       fetch(`${C.HOST}?${C.KEY},${C.EMA},${STOCKS[count]}`);
       fetch(`${C.HOST}?${C.KEY2},${C.RSI},${STOCKS[count]}`);
       fetch(`${C.HOST}?${C.KEY2},${C.MACD},${STOCKS[count]}`);
+      // fetch(`${C.HOST}?${C.KEY},${C.SMA},${STOCKS[count]}`);
       count++;
     }
   });
