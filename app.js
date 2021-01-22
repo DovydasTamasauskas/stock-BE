@@ -1,13 +1,8 @@
 const fetch = require("node-fetch");
 const cron = require("node-cron");
 
-const HELPER = require("./indicators/utils/helper");
 const C = require("./indicators/utils/const");
-const SMA = require("./indicators/indicator/sma/sma");
 const RSI = require("./indicators/indicator/rsi/rsi");
-const DAILY = require("./indicators/indicator/daily/daily");
-const MACD = require("./indicators/indicator/macd/macd");
-
 
 var count = 0;
 
@@ -16,13 +11,13 @@ var response = async () => {
     .then((res) => {
       return res.text();
     })
-    .then(body => {
-      var split = body.split('-');
-      if(split.length > 1) {
+    .then((body) => {
+      var split = body.split("-");
+      if (split.length > 1) {
         console.log("starting corn job... MyList");
         // calculate(split);
-       cornJob(split);
-      }else{
+        cornJob(split);
+      } else {
         console.log("starting corn job... DEFAULT");
         cornJob(C.STOCKS);
       }
@@ -31,16 +26,18 @@ var response = async () => {
       console.log("ERROR fetching MyList ", error);
       cornJob(C.STOCKS);
     });
-}
+};
 
-response();
+cron.schedule("0 10 * * *", function () {
+  response();
+});
 
 var cornJob = async (STOCKS) => {
-  cron.schedule("* * * * *", function () {
-    if(count == STOCKS.length){
+  var job = cron.schedule("* * * * *", function () {
+    if (count == STOCKS.length) {
       calculate(STOCKS);
-      // process.exit();
-    }else{
+      job.stop();
+    } else {
       console.log(STOCKS[count], STOCKS.length - count);
       fetch(`${C.HOST}?${C.KEY},${C.DAILY},${STOCKS[count]}`);
       fetch(`${C.HOST}?${C.KEY},${C.EMA},${STOCKS[count]}`);
@@ -50,15 +47,14 @@ var cornJob = async (STOCKS) => {
       count++;
     }
   });
-}
+};
 
 const params = {
-  post: true
+  post: true,
 };
 
 const calculate = async (STOCKS) => {
   console.log("Calculating RSI");
   const rsi = await RSI.getTechData(params, STOCKS);
-  process.exit();
+  console.log("program finished job...");
 };
-
