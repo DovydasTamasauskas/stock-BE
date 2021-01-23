@@ -29,6 +29,7 @@ var response = async () => {
 };
 
 cron.schedule("0 10 * * *", function () {
+  count = 0;
   response();
 });
 
