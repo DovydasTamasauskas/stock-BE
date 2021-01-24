@@ -29,8 +29,11 @@ var response = async () => {
 };
 
 cron.schedule("0 10 * * *", function () {
-  count = 0;
-  response();
+  var date = new Date();
+  if (date.getDay() != 0 && date.getDay() != 1) {
+    count = 0;
+    response();
+  }
 });
 
 var cornJob = async (STOCKS) => {
